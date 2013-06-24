@@ -1071,21 +1071,18 @@ var URLsMaster = [
   
   
   
-  var theCallBack = function() {
+  var outputToConsole = function() {
     console.log(_(results).sortBy(function(url){return url.index}));
   };
   
  
   
-  var qwe = function(callback) {    
+  var processURLs = function(URLArray, callback) {        
     
-    var aryToUse = URLsSmall;
+    var aryLength = URLArray.length;    
+    console.log(aryLength + " total URLs to process");       
     
-    var aryLength = aryToUse.length;    
-    console.log(aryLength + " total URLs to process");   
-    
-    
-    _(aryToUse).each(function( url, index, list ) {      
+    _(URLArray).each(function( url, index, list ) {      
       
       var indexEach = index;
       
@@ -1094,44 +1091,31 @@ var URLsMaster = [
       obj["program"] = url.program;
       obj["url"] = url.url;    
       
-      var goRequest = request(url.url, function( err, res, html ) {
+      request(url.url, function( err, res, html ) {
         
         var parsedHTML = $.load(html);
         
-        var startDate;
+        var startDate;  //populated later with ERROR or actual data
         
         parsedHTML("table[summary='Program Calendar'] strong").map(function(index, tag) {                    
-          if (index === 1) {    //"second" bold statement in tr                        
-            //obj["startDate"] = $(tag).text();            
-            startDate = $(tag).text();            
-            //console.log(obj);
-            //console.log(indexEach);
-            //console.log(results);
-            //return obj;
-          } else {  //if                    
-            //obj["startDate"] = "ERROR";            
+          if (index === 1) {    //"second" bold statement in tr                                    
+            startDate = $(tag).text();                        
           }
-        });  //parseHTML        
+        });
         
         obj["startDate"] = (startDate || "ERROR");
         
         results.push(obj);
-        
-        
+                
         --aryLength;
         
         console.log(aryLength + " URLs left to go");
         if (aryLength <= 0) {
           callback();
         }                   
-        
-        
-      });  //goRequest      
+      });  //request
       
-    })  //each
-    //callback();
-  };  //qwe
+    })  //each    
+  };  //processURLs
 
-  qwe(theCallBack);
-
-
+  processURLs(URLsMaster, outputToConsole);
