@@ -1,7 +1,8 @@
 var $ = require('cheerio'),
     request = require('request'),
     _ = require('underscore'),
-    async = require('async');
+    async = require('async'),
+    fs = require('fs');
 
 //where we placed our results
 var results = [];
@@ -1072,7 +1073,18 @@ var URLsMaster = [
   
   
   var outputToConsole = function() {
-    console.log(_(results).sortBy(function(url){return url.index}));
+    
+    var sorted = _(results).sortBy(function(url){return url.index})
+    
+    
+    console.log(JSON.stringify(sorted, null, 2));
+    
+    fs.writeFile('output.json', JSON.stringify(sorted, null, 2), function (err) {
+      if (err) return console.log(err);
+      //console.log('Hello World > helloworld.txt');
+    });
+    
+    
   };
   
  
