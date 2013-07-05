@@ -1130,4 +1130,4 @@ var URLsMaster = [
     })  //each    
   };  //processURLs
 
-  processURLs(URLsMaster, outputToConsole);
+  processURLs(URLsSmall, outputToConsole);
