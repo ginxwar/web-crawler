@@ -1088,7 +1088,9 @@ var URLsMaster = [
   };
   
  
-  
+  /*
+  * this part works too, but doesn't use async
+  *
   var processURLs = function(URLArray, callback) {        
     
     var aryLength = URLArray.length;    
@@ -1129,5 +1131,53 @@ var URLsMaster = [
       
     })  //each    
   };  //processURLs
+  */
 
-  processURLs(URLsSmall, outputToConsole);
+  //processURLs(URLsSmall, outputToConsole);
+
+
+
+
+
+URLArray = URLsSmall;
+var aryLength = URLArray.length;    
+console.log(aryLength + " total URLs to process");       
+
+
+var urlIndex = 0;
+var eachUrl = function(url, callback) {
+  
+  
+  var obj = {};
+  obj["index"] = urlIndex++;
+  obj["program"] = url.program;
+  obj["url"] = url.url;    
+ 
+  request(url.url, function( err, res, html ) {
+    var parsedHTML = $.load(html);
+    var startDate;  //populated later with ERROR or actual data
+    parsedHTML("table[summary='Program Calendar'] strong").map(function(index, tag) {                    
+      if (index === 1) {    //"second" bold statement in tr                                    
+        startDate = $(tag).text();                        
+      }
+    });
+    
+    obj["startDate"] = (startDate || "ERROR");
+    
+    results.push(obj);
+    
+    console.log("processing " + urlIndex + "/" + aryLength);
+    //console.log(url.url);
+  
+    callback();  //needed for async
+  });  //request
+}
+
+
+async.each(URLArray, eachUrl, function(err){
+  if (err) return err;
+  //console.log(results);
+  console.log("last");
+  outputToConsole();
+});
+    
