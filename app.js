@@ -1146,13 +1146,13 @@ console.log(aryLength + " total URLs to process");
 
 var urlIndex = 0;
 var eachUrl = function(url, callback) {
-  
-  
   var obj = {};
   obj["index"] = urlIndex++;
   obj["program"] = url.program;
   obj["url"] = url.url;    
  
+  //console.log("processing " + urlIndex + "/" + aryLength);
+  
   request(url.url, function( err, res, html ) {
     var parsedHTML = $.load(html);
     var startDate;  //populated later with ERROR or actual data
@@ -1166,7 +1166,7 @@ var eachUrl = function(url, callback) {
     
     results.push(obj);
     
-    console.log("processing " + urlIndex + "/" + aryLength);
+    
     //console.log(url.url);
   
     callback();  //needed for async
